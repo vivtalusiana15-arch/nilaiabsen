@@ -1018,8 +1018,23 @@
       .sidebar, .topbar, .btn, .card-header,
       .badge-sync, .quick-actions, .toast-container,
       .form-row, .form-group, .modal-backdrop, .no-print,
-      .academic-pill, input, select, textarea, .menu-toggle {
+      .academic-pill, input, select, textarea, .menu-toggle,
+      .mobile-student-cards, .mobile-view-toggle, .mobile-bottom-nav,
+      .sidebar-backdrop, .month-shortcuts-bar, .touch-scroll-hint {
         display: none !important;
+      }
+
+      /* RESET STICKY COLUMNS FOR CLEAN A4/F4 PRINT */
+      .table-sticky-names th,
+      .table-sticky-names td {
+        position: static !important;
+        box-shadow: none !important;
+      }
+
+      #monthlyTableContainer {
+        display: block !important;
+        max-height: none !important;
+        overflow: visible !important;
       }
 
       .main-wrapper {
@@ -1133,6 +1148,212 @@
       }
     }
 
+    /* Sticky Columns on Tables for Easy Mobile Swiping */
+    .table-sticky-names th:first-child,
+    .table-sticky-names td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 4;
+      background-color: #f8fafc;
+    }
+    .table-sticky-names td:first-child {
+      background-color: #ffffff;
+    }
+
+    .table-sticky-names th:nth-child(2),
+    .table-sticky-names td:nth-child(2) {
+      position: sticky;
+      left: 36px;
+      z-index: 4;
+      background-color: #f8fafc;
+    }
+    .table-sticky-names td:nth-child(2) {
+      background-color: #ffffff;
+    }
+
+    .table-sticky-names th:nth-child(3),
+    .table-sticky-names td.col-name,
+    .table-sticky-names td.student-col {
+      position: sticky;
+      left: 112px;
+      z-index: 4;
+      background-color: #f8fafc;
+      box-shadow: 3px 0 6px -2px rgba(0, 0, 0, 0.12);
+    }
+    .table-sticky-names td.col-name,
+    .table-sticky-names td.student-col {
+      background-color: #ffffff;
+    }
+
+    /* Mobile Enhancements: Backdrop, Bottom Nav, Month Chips, Card Toggle */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(2px);
+      z-index: 99;
+    }
+    .sidebar-backdrop.active {
+      display: block;
+    }
+
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      z-index: 85;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 4px;
+    }
+
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #64748b;
+      font-size: 10.5px;
+      font-weight: 600;
+      flex: 1;
+      height: 100%;
+      border: none;
+      background: none;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .bottom-nav-item i {
+      font-size: 17px;
+      transition: var(--transition);
+    }
+    .bottom-nav-item.active {
+      color: var(--primary);
+    }
+    .bottom-nav-item.active i {
+      transform: translateY(-2px);
+    }
+
+    /* Month Selector Chips */
+    .month-shortcuts-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .btn-month-chip {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-month-chip:hover {
+      background: #e2e8f0;
+    }
+    .btn-month-chip.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Mobile View Toggle (Tabel vs Kartu) */
+    .mobile-view-toggle {
+      display: inline-flex;
+      background: #f1f5f9;
+      border-radius: var(--radius-md);
+      padding: 3px;
+      gap: 3px;
+      margin-bottom: 14px;
+    }
+    .btn-toggle {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-toggle.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* Mobile Student Rekap Cards */
+    .mobile-student-cards {
+      display: none;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .std-rekap-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .std-rekap-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 8px;
+    }
+    .std-rekap-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .std-avatar-circle {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px;
+    }
+    .std-rekap-badges {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .rekap-badge-box {
+      padding: 6px 4px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .rekap-badge-box.h { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .rekap-badge-box.s { background: #fffbeb; color: #854d0e; border: 1px solid #fef08a; }
+    .rekap-badge-box.i { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+    .rekap-badge-box.a { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
     /* Responsive */
     @media (max-width: 992px) {
       .sidebar { transform: translateX(-100%); }
@@ -1141,6 +1362,62 @@
       .menu-toggle { display: block; }
       .content-area { padding: 16px; }
       .topbar { padding: 0 16px; }
+    }
+
+    @media (max-width: 768px) {
+      .mobile-bottom-nav {
+        display: flex;
+      }
+      .content-area {
+        padding: 12px 14px 85px 14px !important;
+      }
+      .topbar {
+        padding: 0 12px;
+        height: 58px;
+      }
+      .topbar-right button span {
+        display: none;
+      }
+      .topbar-right .btn-sm {
+        padding: 6px 10px;
+      }
+      .academic-pill {
+        display: none;
+      }
+      .dashboard-metrics {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .metric-card {
+        padding: 12px;
+        gap: 10px;
+      }
+      .metric-icon {
+        width: 38px; height: 38px; font-size: 18px;
+      }
+      .metric-value {
+        font-size: 20px;
+      }
+      .metric-title {
+        font-size: 11px;
+      }
+      .metric-subtitle {
+        font-size: 10px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .attendance-btn {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        min-width: 36px;
+      }
+      .card-header {
+        padding: 14px 16px;
+      }
+      .card-body {
+        padding: 16px;
+      }
     }
   </style>
 </head>
@@ -1605,11 +1882,11 @@
           <div class="card-header no-print">
             <div>
               <h3 class="card-title"><i class="fa-solid fa-calendar-days"></i> Buku Rekapitulasi Absensi Bulanan</h3>
-              <p class="card-subtitle">Format standar buku absensi bulanan siswa kelas VI SD (Tanggal 1–31).</p>
+              <p class="card-subtitle">Format resmi buku absensi bulanan siswa kelas VI SD (Tanggal 1–31 siap cetak).</p>
             </div>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button class="btn btn-sm btn-primary" onclick="window.print()">
-                <i class="fa-solid fa-print"></i> Cetak Rekap (Landscape A4/F4)
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <button class="btn btn-sm btn-primary" id="btnCetakRekapTop" onclick="printMonthlyRekap()" style="font-weight: 700; box-shadow: 0 2px 8px rgba(37,99,235,0.3);">
+                <i class="fa-solid fa-print"></i> <span id="textBtnCetakRekap">Cetak Rekap (Landscape)</span>
               </button>
               <button class="btn btn-sm btn-secondary" onclick="exportMonthlyRekapCSV()">
                 <i class="fa-solid fa-file-export"></i> Ekspor CSV
@@ -1621,11 +1898,30 @@
           </div>
 
           <div class="card-body">
-            <!-- Filter Toolbar (Hidden in Print) -->
-            <div class="form-row no-print" style="margin-bottom: 20px;">
-              <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label">Pilih Bulan:</label>
-                <select id="monthlySelectMonth" class="form-select" onchange="renderMonthlyRekapTable()">
+            <!-- Pilihan Cepat Bulan (Shortcuts: Kemaren, Bulan Ini, Bulan Depan) -->
+            <div class="month-shortcuts-bar no-print">
+              <span style="font-size: 12px; font-weight: 700; color: #475569; display: flex; align-items: center; gap: 4px;">
+                <i class="fa-solid fa-wand-magic-sparkles text-primary"></i> Pilihan Cepat:
+              </span>
+              <button type="button" class="btn-month-chip" id="btnChipBulanKemarin" onclick="setRekapMonthShortcut('prev')" title="Pilih dan Cetak Rekap Bulan Kemarin">
+                <i class="fa-solid fa-backward-step"></i> Bulan Kemarin (<span id="txtPrevMonthName">...</span>)
+              </button>
+              <button type="button" class="btn-month-chip active" id="btnChipBulanIni" onclick="setRekapMonthShortcut('current')" title="Pilih Bulan Berjalan Saat Ini">
+                <i class="fa-solid fa-circle-dot"></i> Bulan Ini (<span id="txtCurrentMonthName">...</span>)
+              </button>
+              <button type="button" class="btn-month-chip" id="btnChipBulanDepan" onclick="setRekapMonthShortcut('next')" title="Pilih Bulan Berikutnya">
+                <i class="fa-solid fa-forward-step"></i> Bulan Depan (<span id="txtNextMonthName">...</span>)
+              </button>
+              <span class="badge badge-info" id="activeMonthBadge" style="margin-left: auto; font-size: 12px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-calendar-check"></i> Siap Cetak: <strong id="lblActiveMonth">Oktober 2026</strong>
+              </span>
+            </div>
+
+            <!-- Filter Toolbar (Dropdown Bulan & Tahun + Petunjuk Warna) -->
+            <div class="form-row no-print" style="margin-bottom: 16px; align-items: flex-end;">
+              <div class="form-group" style="margin-bottom: 0; min-width: 140px;">
+                <label class="form-label" style="font-weight: 600;"><i class="fa-regular fa-calendar"></i> Pilih Bulan:</label>
+                <select id="monthlySelectMonth" class="form-select" onchange="onMonthlySelectorChanged()">
                   <option value="1">Januari</option>
                   <option value="2">Februari</option>
                   <option value="3">Maret</option>
@@ -1640,19 +1936,34 @@
                   <option value="12">Desember</option>
                 </select>
               </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label">Pilih Tahun:</label>
-                <select id="monthlySelectYear" class="form-select" onchange="renderMonthlyRekapTable()"></select>
+              <div class="form-group" style="margin-bottom: 0; min-width: 110px;">
+                <label class="form-label" style="font-weight: 600;"><i class="fa-solid fa-calendar-check"></i> Pilih Tahun:</label>
+                <select id="monthlySelectYear" class="form-select" onchange="onMonthlySelectorChanged()"></select>
               </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label">Petunjuk Warna:</label>
-                <div style="display: flex; gap: 8px; padding-top: 6px; font-size: 11px; flex-wrap: wrap;">
-                  <span class="cell-h">● H = Hadir</span>
-                  <span class="cell-s">● S = Sakit</span>
-                  <span class="cell-i">● I = Izin</span>
-                  <span class="cell-a">● A = Alpa</span>
-                  <span style="color: #991b1b;">● Merah = Hari Libur / Minggu</span>
+              <div class="form-group" style="margin-bottom: 0; flex: 1;">
+                <label class="form-label" style="font-weight: 600;">Petunjuk Kode Kehadiran:</label>
+                <div style="display: flex; gap: 10px; padding-top: 6px; font-size: 11.5px; flex-wrap: wrap;">
+                  <span class="cell-h" style="font-weight: 600;">● H = Hadir</span>
+                  <span class="cell-s" style="font-weight: 600;">● S = Sakit</span>
+                  <span class="cell-i" style="font-weight: 600;">● I = Izin</span>
+                  <span class="cell-a" style="font-weight: 600;">● A = Alpa</span>
+                  <span style="color: #dc2626; font-weight: 600;">● Merah = Hari Minggu / Libur</span>
                 </div>
+              </div>
+            </div>
+
+            <!-- Mode Tampilan Khusus HP (Tabel Matriks vs Kartu Siswa) -->
+            <div class="no-print" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+              <div class="mobile-view-toggle">
+                <button type="button" class="btn-toggle active" id="btnViewTable" onclick="toggleRekapMobileView('table')">
+                  <i class="fa-solid fa-table-cells"></i> Mode Tabel (Matriks 1–31)
+                </button>
+                <button type="button" class="btn-toggle" id="btnViewCards" onclick="toggleRekapMobileView('cards')">
+                  <i class="fa-solid fa-id-card"></i> Mode Ringkasan Kartu Siswa (HP)
+                </button>
+              </div>
+              <div class="touch-scroll-hint" id="touchScrollHint" style="font-size: 11.5px; color: #64748b; background: #f8fafc; padding: 4px 10px; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                <i class="fa-solid fa-arrows-left-right text-primary"></i> Geser tabel ke kanan untuk melihat tanggal 1–31 (Kolom nama siswa tetap terkunci di kiri)
               </div>
             </div>
 
@@ -1683,10 +1994,13 @@
               <span id="printMonthlySubtitle">Kelas: VI (Enam) &bull; Semester Ganjil &bull; Tahun Pelajaran 2026/2027</span>
             </div>
 
-            <!-- Table Container -->
-            <div class="table-responsive" style="max-height: 700px;">
-              <table class="monthly-rekap-table" id="monthlyRekapTable"></table>
+            <!-- Table Container (With Sticky Student Names for Mobile Touch Swiping) -->
+            <div class="table-responsive" id="monthlyTableContainer" style="max-height: 700px; -webkit-overflow-scrolling: touch;">
+              <table class="monthly-rekap-table table-sticky-names" id="monthlyRekapTable"></table>
             </div>
+
+            <!-- Mobile Student Cards Container (Alternative View for Smartphones) -->
+            <div class="mobile-student-cards no-print" id="monthlyCardsContainer"></div>
 
             <!-- Signatures for print -->
             <div class="signature-section">
@@ -2384,6 +2698,33 @@
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- Mobile Sidebar Backdrop (Tutup sidebar saat diklik di HP) -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebarMobile()"></div>
+
+<!-- Mobile Bottom Navigation Bar (Khusus Layar HP / Smartphone) -->
+<nav class="mobile-bottom-nav no-print" id="mobileBottomNav">
+  <button type="button" class="bottom-nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+    <i class="fa-solid fa-house"></i>
+    <span>Beranda</span>
+  </button>
+  <button type="button" class="bottom-nav-item" data-view="absensi-harian" onclick="switchView('absensi-harian')">
+    <i class="fa-solid fa-calendar-check"></i>
+    <span>Absen Hari</span>
+  </button>
+  <button type="button" class="bottom-nav-item" data-view="rekap-bulanan" onclick="switchView('rekap-bulanan')">
+    <i class="fa-solid fa-calendar-days"></i>
+    <span>Rekap Bulan</span>
+  </button>
+  <button type="button" class="bottom-nav-item" data-view="input-nilai" onclick="switchView('input-nilai')">
+    <i class="fa-solid fa-chart-line"></i>
+    <span>Nilai</span>
+  </button>
+  <button type="button" class="bottom-nav-item" onclick="openDatabaseSheet()">
+    <i class="fa-solid fa-table text-success"></i>
+    <span>Sheets</span>
+  </button>
+</nav>
+
 <!-- ==========================================================================
      APPLICATION JAVASCRIPT LOGIC
      ========================================================================== -->
@@ -2768,6 +3109,10 @@ function openGoogleSpreadsheet(e) {
   }
 }
 
+function openDatabaseSheet(e) {
+  openGoogleSpreadsheet(e);
+}
+
 function setSyncIndicator(isOnline, text) {
   const btn = document.getElementById('btnSyncIndicator');
   const txt = document.getElementById('syncStatusText');
@@ -2786,6 +3131,25 @@ function setSyncIndicator(isOnline, text) {
  * NAVIGATION CONTROLLER
  * ============================================================================
  */
+function toggleSidebar() {
+  const sidebar = document.getElementById('appSidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  if (sidebar) {
+    const isOpen = sidebar.classList.toggle('open');
+    if (backdrop) {
+      if (isOpen) backdrop.classList.add('active');
+      else backdrop.classList.remove('active');
+    }
+  }
+}
+
+function closeSidebarMobile() {
+  const sidebar = document.getElementById('appSidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  if (sidebar) sidebar.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('active');
+}
+
 function initNavigation() {
   const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
   navItems.forEach(item => {
@@ -2794,8 +3158,7 @@ function initNavigation() {
       if (targetView) {
         e.preventDefault();
         switchView(targetView);
-        const sidebar = document.getElementById('appSidebar');
-        if (sidebar.classList.contains('open')) sidebar.classList.remove('open');
+        closeSidebarMobile();
       }
     });
   });
@@ -2803,13 +3166,21 @@ function initNavigation() {
   const menuToggle = document.getElementById('menuToggle');
   if (menuToggle) {
     menuToggle.addEventListener('click', () => {
-      document.getElementById('appSidebar').classList.toggle('open');
+      toggleSidebar();
     });
   }
 }
 
 function switchView(viewId) {
+  closeSidebarMobile();
+
   document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
+    if (item.getAttribute('data-view') === viewId) item.classList.add('active');
+    else item.classList.remove('active');
+  });
+
+  // Sinkronisasi navigasi bawah HP
+  document.querySelectorAll('.mobile-bottom-nav .bottom-nav-item').forEach(item => {
     if (item.getAttribute('data-view') === viewId) item.classList.add('active');
     else item.classList.remove('active');
   });
@@ -2837,6 +3208,9 @@ function switchView(viewId) {
     document.getElementById('pageMainHeading').textContent = titles[viewId].title;
     document.getElementById('pageSubHeading').textContent = titles[viewId].sub;
   }
+
+  // Scroll ke atas dengan halus saat ganti menu di HP
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
   if (viewId === 'dashboard') renderDashboard();
   if (viewId === 'rekap-bulanan') renderMonthlyRekapTable();
@@ -3367,8 +3741,69 @@ async function saveDailyAttendanceToBackend() {
  * REKAP ABSENSI BULANAN CONTROLLER (MATRIKS 1-31 KELAS VI SD)
  * ============================================================================
  */
+function setRekapMonthShortcut(type) {
+  const now = new Date();
+  let target;
+  if (type === 'prev') {
+    target = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  } else if (type === 'next') {
+    target = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  } else {
+    target = new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+
+  const mSelect = document.getElementById('monthlySelectMonth');
+  const ySelect = document.getElementById('monthlySelectYear');
+  if (mSelect) mSelect.value = target.getMonth() + 1;
+  if (ySelect) ySelect.value = target.getFullYear();
+
+  renderMonthlyRekapTable();
+
+  const mName = getIndonesianMonth(target.getMonth() + 1);
+  const infoText = type === 'prev' 
+    ? `Bulan Kemarin (${mName} ${target.getFullYear()}) aktif. Siap dicetak!`
+    : (type === 'next' ? `Bulan Depan (${mName} ${target.getFullYear()}) aktif.` : `Bulan Ini (${mName} ${target.getFullYear()}) aktif.`);
+  showToast(infoText, 'info');
+}
+
+function onMonthlySelectorChanged() {
+  renderMonthlyRekapTable();
+}
+
+function toggleRekapMobileView(mode) {
+  const tableCont = document.getElementById('monthlyTableContainer');
+  const cardsCont = document.getElementById('monthlyCardsContainer');
+  const btnTable = document.getElementById('btnViewTable');
+  const btnCards = document.getElementById('btnViewCards');
+  const hint = document.getElementById('touchScrollHint');
+
+  if (mode === 'cards') {
+    if (tableCont) tableCont.style.display = 'none';
+    if (cardsCont) cardsCont.style.display = 'grid';
+    if (btnCards) btnCards.classList.add('active');
+    if (btnTable) btnTable.classList.remove('active');
+    if (hint) hint.style.display = 'none';
+  } else {
+    if (tableCont) tableCont.style.display = 'block';
+    if (cardsCont) cardsCont.style.display = 'none';
+    if (btnTable) btnTable.classList.add('active');
+    if (btnCards) btnCards.classList.remove('active');
+    if (hint) hint.style.display = 'block';
+  }
+}
+
+function printMonthlyRekap() {
+  // Pastikan tampilan tabel matriks aktif agar hasil cetak lengkap
+  const tableCont = document.getElementById('monthlyTableContainer');
+  const cardsCont = document.getElementById('monthlyCardsContainer');
+  if (tableCont) tableCont.style.display = 'block';
+  if (cardsCont) cardsCont.style.display = 'none';
+  window.print();
+}
+
 function renderMonthlyRekapTable() {
   const table = document.getElementById('monthlyRekapTable');
+  const cardsCont = document.getElementById('monthlyCardsContainer');
   if (!table) return;
 
   const month = parseInt(document.getElementById('monthlySelectMonth').value, 10);
@@ -3378,7 +3813,50 @@ function renderMonthlyRekapTable() {
   const monthName = getIndonesianMonth(month);
   const dynamic = getDynamicAcademicInfo(new Date(year, month - 1, 1));
 
-  // Update Print Document Header
+  // 1. Update Pintasan Bulan (Kemarin, Sekarang, Depan)
+  const now = new Date();
+  const prevMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const nextMonthDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+  const txtPrev = document.getElementById('txtPrevMonthName');
+  if (txtPrev) txtPrev.textContent = getIndonesianMonth(prevMonthDate.getMonth() + 1);
+  const txtCur = document.getElementById('txtCurrentMonthName');
+  if (txtCur) txtCur.textContent = getIndonesianMonth(now.getMonth() + 1);
+  const txtNext = document.getElementById('txtNextMonthName');
+  if (txtNext) txtNext.textContent = getIndonesianMonth(nextMonthDate.getMonth() + 1);
+
+  const chipPrev = document.getElementById('btnChipBulanKemarin');
+  const chipCur = document.getElementById('btnChipBulanIni');
+  const chipNext = document.getElementById('btnChipBulanDepan');
+
+  if (chipPrev) chipPrev.classList.remove('active');
+  if (chipCur) chipCur.classList.remove('active');
+  if (chipNext) chipNext.classList.remove('active');
+
+  const isPrevMonth = (year === prevMonthDate.getFullYear() && month === (prevMonthDate.getMonth() + 1));
+  const isCurrentMonth = (year === now.getFullYear() && month === (now.getMonth() + 1));
+  const isNextMonth = (year === nextMonthDate.getFullYear() && month === (nextMonthDate.getMonth() + 1));
+
+  if (isPrevMonth && chipPrev) chipPrev.classList.add('active');
+  else if (isCurrentMonth && chipCur) chipCur.classList.add('active');
+  else if (isNextMonth && chipNext) chipNext.classList.add('active');
+
+  // Update label aktif & tombol cetak
+  const lblActive = document.getElementById('lblActiveMonth');
+  if (lblActive) lblActive.textContent = `${monthName} ${year}`;
+
+  const btnCetakText = document.getElementById('textBtnCetakRekap');
+  if (btnCetakText) {
+    if (isPrevMonth) {
+      btnCetakText.textContent = `Cetak Rekap Bulan Kemarin (${monthName} ${year})`;
+    } else if (isCurrentMonth) {
+      btnCetakText.textContent = `Cetak Rekap Bulan Ini (${monthName} ${year})`;
+    } else {
+      btnCetakText.textContent = `Cetak Rekap (${monthName} ${year})`;
+    }
+  }
+
+  // 2. Update Header Dokumen Cetak Resmi
   const titleEl = document.getElementById('printMonthlyTitle');
   if (titleEl) {
     titleEl.textContent = `DAFTAR HADIR SISWA KELAS VI BULAN ${monthName.toUpperCase()} ${year}`;
@@ -3388,16 +3866,30 @@ function renderMonthlyRekapTable() {
     subtitleEl.textContent = `Kelas: VI (Enam) • Semester ${dynamic.semester} • Tahun Pelajaran ${dynamic.academicYear}`;
   }
 
-  // 1. Build Header
+  // Tanggal tanda tangan cetak dinamis:
+  // Jika mencetak bulan kemarin, tanggal ttd adalah hari terakhir bulan tersebut (misal 30 September 2026)
+  const isPastMonth = (year < now.getFullYear()) || (year === now.getFullYear() && month < (now.getMonth() + 1));
+  const printDateEl = document.getElementById('printDatePlace');
+  if (printDateEl) {
+    if (isPastMonth) {
+      printDateEl.innerHTML = `Jember, ${daysInMonth} ${monthName} ${year}<br>Guru Kelas VI`;
+    } else if (isCurrentMonth) {
+      printDateEl.innerHTML = `Jember, ${now.getDate()} ${monthName} ${year}<br>Guru Kelas VI`;
+    } else {
+      printDateEl.innerHTML = `Jember, .............................. ${year}<br>Guru Kelas VI`;
+    }
+  }
+
+  // 3. Render Header Tabel Matriks
   let theadHTML = `
     <thead>
       <tr>
-        <th rowspan="2" style="width: 25px; text-align: center;">NO</th>
+        <th rowspan="2" style="width: 28px; text-align: center;">NO</th>
         <th rowspan="2" style="width: 75px; text-align: center;">NISN</th>
-        <th rowspan="2" style="width: 160px; text-align: left; padding-left: 6px;">NAMA LENGKAP SISWA</th>
-        <th colspan="${daysInMonth}" style="text-align: center;">TANGGAL</th>
-        <th colspan="4" style="text-align: center;">REKAP</th>
-        <th rowspan="2" style="width: 45px; text-align: center;">%</th>
+        <th rowspan="2" style="width: 170px; text-align: left; padding-left: 8px;">NAMA LENGKAP SISWA</th>
+        <th colspan="${daysInMonth}" style="text-align: center;">TANGGAL KEHADIRAN (1–${daysInMonth})</th>
+        <th colspan="4" style="text-align: center;">TOTAL</th>
+        <th rowspan="2" style="width: 48px; text-align: center;">%</th>
       </tr>
       <tr>
   `;
@@ -3405,20 +3897,21 @@ function renderMonthlyRekapTable() {
   for (let d = 1; d <= daysInMonth; d++) {
     const dateObj = new Date(year, month - 1, d);
     const isSunday = dateObj.getDay() === 0;
-    theadHTML += `<th style="width: 17px; text-align: center;" class="${isSunday ? 'day-sun' : ''}">${d}</th>`;
+    theadHTML += `<th style="width: 18px; text-align: center;" class="${isSunday ? 'day-sun' : ''}">${d}</th>`;
   }
 
   theadHTML += `
-        <th style="width: 25px; text-align: center;" title="Hadir">H</th>
-        <th style="width: 25px; text-align: center;" title="Sakit">S</th>
-        <th style="width: 25px; text-align: center;" title="Izin">I</th>
-        <th style="width: 25px; text-align: center;" title="Alpa">A</th>
+        <th style="width: 26px; text-align: center;" title="Hadir">H</th>
+        <th style="width: 26px; text-align: center;" title="Sakit">S</th>
+        <th style="width: 26px; text-align: center;" title="Izin">I</th>
+        <th style="width: 26px; text-align: center;" title="Alpa">A</th>
       </tr>
     </thead>
   `;
 
-  // 2. Build Body Rows
+  // 4. Render Baris Siswa & Kartu Siswa untuk HP
   let tbodyHTML = '<tbody>';
+  let cardsHTML = '';
   const dailyClassTotals = new Array(daysInMonth + 1).fill(0);
 
   appData.students.forEach((st, idx) => {
@@ -3458,22 +3951,55 @@ function renderMonthlyRekapTable() {
     const totalRecorded = countH + countS + countI + countA;
     const pct = totalRecorded > 0 ? Math.round((countH / totalRecorded) * 100) : 100;
 
+    // Baris Tabel Matriks
     tbodyHTML += `
       <tr>
         <td style="text-align: center;">${st.noUrut || (idx + 1)}</td>
         <td style="text-align: center;"><code>${st.nisn}</code></td>
         <td class="col-name">${escapeHtml(st.namaLengkap)}</td>
         ${studentCellsHTML}
-        <td style="font-weight: bold; background: #f0fdf4;">${countH}</td>
-        <td style="font-weight: bold; background: #fffbeb;">${countS}</td>
-        <td style="font-weight: bold; background: #eff6ff;">${countI}</td>
-        <td style="font-weight: bold; background: #fef2f2;">${countA}</td>
-        <td style="font-weight: bold;">${pct}%</td>
+        <td style="font-weight: bold; background: #f0fdf4; text-align: center;">${countH}</td>
+        <td style="font-weight: bold; background: #fffbeb; text-align: center;">${countS}</td>
+        <td style="font-weight: bold; background: #eff6ff; text-align: center;">${countI}</td>
+        <td style="font-weight: bold; background: #fef2f2; text-align: center; ${countA > 0 ? 'color: #dc2626;' : ''}">${countA}</td>
+        <td style="font-weight: bold; text-align: center;">${pct}%</td>
       </tr>
+    `;
+
+    // Kartu Khusus HP (Mobile Card View)
+    cardsHTML += `
+      <div class="std-rekap-card">
+        <div class="std-rekap-header">
+          <div class="std-rekap-info">
+            <div class="std-avatar-circle">${st.noUrut || (idx + 1)}</div>
+            <div>
+              <div style="font-weight: 700; color: #1e293b; font-size: 13.5px;">${escapeHtml(st.namaLengkap)}</div>
+              <div style="font-size: 11px; color: #64748b;">NISN: ${st.nisn} • ${st.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}</div>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <span class="badge ${pct >= 85 ? 'badge-success' : (pct >= 70 ? 'badge-warning' : 'badge-danger')}" style="font-size: 12px; font-weight: 700;">
+              ${pct}%
+            </span>
+          </div>
+        </div>
+        <div class="std-rekap-badges">
+          <div class="rekap-badge-box h">Hadir: ${countH}</div>
+          <div class="rekap-badge-box s">Sakit: ${countS}</div>
+          <div class="rekap-badge-box i">Izin: ${countI}</div>
+          <div class="rekap-badge-box a">Alpa: ${countA}</div>
+        </div>
+        <div style="font-size: 11px; color: #64748b; background: #f8fafc; border-radius: 6px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;">
+          <span>Total Tercatat: <strong>${totalRecorded} hari</strong></span>
+          <span style="color: ${countA > 0 ? '#dc2626' : '#16a34a'}; font-weight: 600;">
+            ${countA > 0 ? `<i class="fa-solid fa-triangle-exclamation"></i> ${countA} Hari Alpa` : '<i class="fa-solid fa-circle-check"></i> Nihil Alpa'}
+          </span>
+        </div>
+      </div>
     `;
   });
 
-  // Footer Row
+  // Footer Total Kehadiran Kelas
   let totalsRowHTML = `
     <tr style="background: #f8fafc; font-weight: bold;">
       <td colspan="3" style="text-align: right; padding-right: 8px;">TOTAL HADIR KELAS:</td>
@@ -3485,18 +4011,22 @@ function renderMonthlyRekapTable() {
     if (dateObj.getDay() === 0) {
       totalsRowHTML += `<td class="day-sun">-</td>`;
     } else {
-      totalsRowHTML += `<td>${dailyClassTotals[d] || 0}</td>`;
+      totalsRowHTML += `<td style="text-align: center;">${dailyClassTotals[d] || 0}</td>`;
       sumAllH += dailyClassTotals[d] || 0;
     }
   }
 
   totalsRowHTML += `
-      <td colspan="5" style="text-align: center;">Total: ${sumAllH}</td>
+      <td colspan="5" style="text-align: center; font-weight: 700;">Total: ${sumAllH} Kehadiran</td>
     </tr>
   `;
 
   tbodyHTML += totalsRowHTML + '</tbody>';
   table.innerHTML = theadHTML + tbodyHTML;
+
+  if (cardsCont) {
+    cardsCont.innerHTML = cardsHTML;
+  }
 }
 
 function exportMonthlyRekapCSV() {
