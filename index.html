@@ -1070,7 +1070,7 @@
             <div class="hero-meta-strip">
               <div class="hero-meta-item"><i class="fa-solid fa-school"></i> <span>SDN Kesilir 02</span></div>
               <div class="hero-meta-item"><i class="fa-solid fa-location-dot"></i> <span>Wuluhan, Jember</span></div>
-              <div class="hero-meta-item"><i class="fa-solid fa-id-card"></i> <span>NPSN 20523515</span></div>
+              <div class="hero-meta-item"><i class="fa-solid fa-id-card"></i> <span>NPSN 20524317</span></div>
               <div class="hero-meta-item"><i class="fa-solid fa-cloud-arrow-up" style="color: #059669;"></i> <span>Terhubung Sheets Cloud</span></div>
             </div>
           </div>
@@ -1992,6 +1992,7 @@ const defaultSettings = {
   BOBOT_FORMATIF: 40,
   BOBOT_SUMATIF_LM: 40,
   BOBOT_SUMATIF_SAS: 20,
+  FOTO_WALI_KELAS: '',
   GAS_URL: PERMANENT_GAS_URL,
   SPREADSHEET_URL: PERMANENT_SPREADSHEET_URL
 };
@@ -2109,9 +2110,11 @@ const DEFAULT_TEACHER_AVATAR = "data:image/svg+xml;utf8," + encodeURIComponent(`
 
 function initTeacherPhoto() {
   try {
-    const savedPhoto = localStorage.getItem(STORAGE_KEYS.TEACHER_PHOTO);
-    const photoSrc = savedPhoto || DEFAULT_TEACHER_AVATAR;
-    updateTeacherPhotoUI(photoSrc, !!savedPhoto);
+    const cloudPhoto = appData.settings && appData.settings.FOTO_WALI_KELAS;
+    const localPhoto = localStorage.getItem(STORAGE_KEYS.TEACHER_PHOTO);
+    const photoSrc = cloudPhoto || localPhoto || DEFAULT_TEACHER_AVATAR;
+    const isCustom = !!(cloudPhoto || localPhoto);
+    updateTeacherPhotoUI(photoSrc, isCustom);
   } catch (e) {
     console.error("Gagal inisialisasi foto wali kelas:", e);
     updateTeacherPhotoUI(DEFAULT_TEACHER_AVATAR, false);
@@ -2120,15 +2123,22 @@ function initTeacherPhoto() {
 
 function updateTeacherPhotoUI(photoSrc, isCustom = false) {
   const heroImg = document.getElementById('heroTeacherPhoto');
-  if (heroImg) heroImg.src = photoSrc;
+  if (heroImg) {
+    heroImg.onerror = function() { this.onerror = null; this.src = DEFAULT_TEACHER_AVATAR; };
+    heroImg.src = photoSrc;
+  }
 
   const settingsImg = document.getElementById('settingsPhotoPreview');
-  if (settingsImg) settingsImg.src = photoSrc;
+  if (settingsImg) {
+    settingsImg.onerror = function() { this.onerror = null; this.src = DEFAULT_TEACHER_AVATAR; };
+    settingsImg.src = photoSrc;
+  }
 
   const sidebarContainer = document.getElementById('sidebarAvatarContainer');
   if (sidebarContainer) {
-    if (isCustom || (photoSrc && photoSrc.startsWith('data:image'))) {
-      sidebarContainer.innerHTML = `<img src="${photoSrc}" alt="Foto Wali Kelas" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;">`;
+    if (isCustom || (photoSrc && (photoSrc.startsWith('http') || photoSrc.startsWith('data:image')))) {
+      sidebarContainer.innerHTML = `<img src="${photoSrc}" alt="Foto Wali Kelas" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block;" onerror="this.style.display='none'; document.getElementById('sidebarAvatarFallback')?.style.removeProperty('display');">
+      <div id="sidebarAvatarFallback" class="teacher-avatar-fallback" style="display: none;">VL</div>`;
     } else {
       const teacherName = (appData.settings && appData.settings.GURU_KELAS) || 'Vivta Lusiana';
       const initials = teacherName.split(' ').map(n => n[0]).filter(Boolean).slice(0, 2).join('');
@@ -2152,8 +2162,8 @@ function handleTeacherPhotoUpload(e) {
   reader.onload = function(evt) {
     const rawDataUrl = evt.target.result;
     const img = new Image();
-    img.onload = function() {
-      // Resize to max 720px to keep localStorage ultra fast and within quota (<120KB)
+    img.onload = async function() {
+      // Resize to max 720px to keep image crisp and ultra fast to transfer
       const maxDim = 720;
       let width = img.width;
       let height = img.height;
@@ -2174,29 +2184,74 @@ function handleTeacherPhotoUpload(e) {
       ctx.drawImage(img, 0, 0, width, height);
 
       const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      
+      // 1. Tampilkan dan simpan di cache lokal seketika
       try {
         localStorage.setItem(STORAGE_KEYS.TEACHER_PHOTO, optimizedDataUrl);
-        updateTeacherPhotoUI(optimizedDataUrl, true);
-        showToast('Foto Wali Kelas berhasil diunggah dan disimpan!', 'success');
-      } catch (err) {
-        console.error('Storage quota exceeded:', err);
-        showToast('Gagal menyimpan foto: ukuran terlalu besar untuk browser.', 'danger');
+      } catch (err) {}
+      updateTeacherPhotoUI(optimizedDataUrl, true);
+
+      // 2. Unggah ke Google Drive & Cloud Backend agar semua orang bisa melihat
+      const gasUrl = appData.settings.GAS_URL;
+      if (gasUrl) {
+        showToast('Mengunggah foto ke Google Drive agar bisa dilihat semua orang...', 'info');
+        try {
+          const resp = await fetch(gasUrl, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'uploadTeacherPhoto',
+              payload: {
+                base64Data: optimizedDataUrl,
+                fileName: 'FOTO_WALI_KELAS_VI.jpg',
+                mimeType: 'image/jpeg'
+              }
+            })
+          });
+          const res = await resp.json();
+          if (res.status === 'success' && res.photoUrl) {
+            appData.settings.FOTO_WALI_KELAS = res.photoUrl;
+            localStorage.setItem(STORAGE_KEYS.TEACHER_PHOTO, res.photoUrl);
+            saveToLocalStorage(STORAGE_KEYS.SETTINGS);
+            updateTeacherPhotoUI(res.photoUrl, true);
+            showToast('Foto Wali Kelas berhasil tersimpan di Google Drive! Kini semua orang dapat melihat foto ini di web.', 'success');
+          } else {
+            showToast('Foto tersimpan di browser Anda. (Cloud: ' + (res.message || 'proses sinkronisasi') + ')', 'warning');
+          }
+        } catch (cloudErr) {
+          console.warn("Gagal unggah foto ke cloud:", cloudErr);
+          showToast('Foto tersimpan di browser lokal Anda. Sinkronisasi cloud Google Drive aktif saat online.', 'info');
+        }
+      } else {
+        showToast('Foto Wali Kelas berhasil disimpan di browser lokal!', 'success');
       }
     };
     img.onerror = function() {
-      showToast('Gagal membaca gambar.', 'danger');
+      showToast('Gagal membaca format gambar.', 'danger');
     };
     img.src = rawDataUrl;
   };
   reader.readAsDataURL(file);
 }
 
-function removeTeacherPhoto() {
-  if (confirm('Kembalikan foto wali kelas ke gambar default?')) {
+async function removeTeacherPhoto() {
+  if (confirm('Kembalikan foto wali kelas ke gambar default? (Akan direset untuk semua pengunjung website)')) {
     try {
       localStorage.removeItem(STORAGE_KEYS.TEACHER_PHOTO);
     } catch(e) {}
+    if (appData.settings) {
+      delete appData.settings.FOTO_WALI_KELAS;
+      saveToLocalStorage(STORAGE_KEYS.SETTINGS);
+    }
     updateTeacherPhotoUI(DEFAULT_TEACHER_AVATAR, false);
+
+    if (appData.settings.GAS_URL) {
+      try {
+        await fetch(appData.settings.GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'removeTeacherPhoto' })
+        });
+      } catch (e) {}
+    }
     showToast('Foto wali kelas dikembalikan ke avatar default.', 'info');
   }
 }
@@ -2446,6 +2501,10 @@ async function autoSyncWithGoogleSheets() {
       if (result.data.settings && Object.keys(result.data.settings).length > 0) {
         appData.settings = { ...appData.settings, ...result.data.settings };
         saveToLocalStorage(STORAGE_KEYS.SETTINGS);
+        if (result.data.settings.FOTO_WALI_KELAS) {
+          localStorage.setItem(STORAGE_KEYS.TEACHER_PHOTO, result.data.settings.FOTO_WALI_KELAS);
+          updateTeacherPhotoUI(result.data.settings.FOTO_WALI_KELAS, true);
+        }
       }
       if (result.data.archives && Array.isArray(result.data.archives)) {
         appData.archives = result.data.archives;
@@ -2502,6 +2561,14 @@ async function pullAllFromGas(showUserToast = true) {
       if (result.data.grades && Object.keys(result.data.grades).length > 0) {
         appData.grades = result.data.grades;
         saveToLocalStorage(STORAGE_KEYS.GRADES);
+      }
+      if (result.data.settings && Object.keys(result.data.settings).length > 0) {
+        appData.settings = { ...appData.settings, ...result.data.settings };
+        saveToLocalStorage(STORAGE_KEYS.SETTINGS);
+        if (result.data.settings.FOTO_WALI_KELAS) {
+          localStorage.setItem(STORAGE_KEYS.TEACHER_PHOTO, result.data.settings.FOTO_WALI_KELAS);
+          updateTeacherPhotoUI(result.data.settings.FOTO_WALI_KELAS, true);
+        }
       }
       if (result.data.archives) {
         appData.archives = result.data.archives;
